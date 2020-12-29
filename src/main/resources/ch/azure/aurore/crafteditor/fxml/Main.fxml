@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<AnchorPane xmlns="http://javafx.com/javafx"
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="ch.azure.aurore.crafteditor.main.MainController"
             prefHeight="400.0" prefWidth="600.0">
-    <TextArea>editor</TextArea>
-
-</AnchorPane>
+    <top><MenuBar fx:id="menuBar">
+        <Menu fx:id="fileMenu" text="Files">
+            <MenuItem fx:id="menuItem_databaseFolder" text="Select databases folder"/>
+            <Menu fx:id="menu_databaseSelection" text="Database">
+                <CheckMenuItem fx:id="checkMenuItem_dummy" text="dummyData"/>
+                <CheckMenuItem fx:id="checkMenuItem_craft" text="craftData"/>
+                <CheckMenuItem fx:id="checkMenuItem_eden" text="edenData"/>
+            </Menu>
+            <MenuItem fx:id="menuItem_close" text="Close"/>
+        </Menu>
+    </MenuBar></top>
+</BorderPane>

@@ -1,5 +1,6 @@
 package ch.azure.aurore.crafteditor;
 
+import ch.azure.aurore.javaxt.fxml.AppSetting;
 import ch.azure.aurore.javaxt.fxml.AppState;
 import ch.azure.aurore.javaxt.fxml.FXApplication;
 import javafx.fxml.FXMLLoader;
@@ -24,5 +25,10 @@ public class App extends FXApplication {
     @Override
     protected Class<? extends AppState> getStateType() {
         return EditorState.class;
+    }
+
+    @Override
+    protected Class<? extends AppSetting> getSettingType() {
+        return EditorSettings.class;
     }
 }
