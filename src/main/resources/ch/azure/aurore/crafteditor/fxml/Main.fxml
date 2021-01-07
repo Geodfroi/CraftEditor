@@ -2,8 +2,12 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.BorderPane?>
-<BorderPane xmlns="http://javafx.com/javafx"
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<BorderPane fx:id="root"
+            xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
+            stylesheets="@Main.css"
             fx:controller="ch.azure.aurore.crafteditor.main.MainController"
             prefHeight="400.0" prefWidth="600.0">
     <top><MenuBar fx:id="menuBar">
@@ -16,5 +20,27 @@
             </Menu>
             <MenuItem fx:id="menuItem_close" text="Close"/>
         </Menu>
+        <Menu fx:id="menu_edit" text="Edit">
+            <MenuItem fx:id="menuItem_createFolder" text="Create folder">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </MenuItem>
+            <Menu fx:id="menu_createItem" text="Create item">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                </accelerator>
+            </Menu>
+        </Menu>
     </MenuBar></top>
+    <right>
+        <VBox id="entriesVBox" prefWidth="240" spacing="4">
+            <TextField fx:id="searchTextField"
+                       promptText="[filter]" />
+            <ListView fx:id="listView"
+                      VBox.vgrow="ALWAYS" />
+        </VBox>
+    </right>
+
+
 </BorderPane>

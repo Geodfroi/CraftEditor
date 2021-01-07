@@ -1,8 +1,5 @@
 package ch.azure.aurore.crafteditor.data.dummy;
 
-import ch.azure.aurore.javaxt.sqlite.wrapper.annotations.DatabaseClass;
-
-@DatabaseClass
 public class Character extends GameObject {
 
     private int liveCount;

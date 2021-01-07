@@ -1,8 +1,8 @@
 package ch.azure.aurore.crafteditor.data.dummy;
 
-import ch.azure.aurore.crafteditor.data.GameDataItem;
+import ch.azure.aurore.crafteditor.data.GameData;
 
-public abstract class GameObject extends GameDataItem {
+public abstract class GameObject extends GameData {
     private int health;
 
     public int getHealth() {

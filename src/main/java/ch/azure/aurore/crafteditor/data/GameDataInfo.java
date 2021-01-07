@@ -1,25 +1,19 @@
 package ch.azure.aurore.crafteditor.data;
 
-import ch.azure.aurore.javaxt.sqlite.wrapper.annotations.DatabaseClass;
+import ch.azure.aurore.javaxt.sqlite.wrapper.SQLiteData;
 
-@DatabaseClass
-public class GameDataInfo {
-    private boolean _modified;
-    private int _id;
+import java.util.HashMap;
+import java.util.Map;
 
-    public boolean is_modified() {
-        return _modified;
+public class GameDataInfo extends SQLiteData {
+
+    private Map<Integer, Integer> currentEntry = new HashMap<>();
+
+    public Map<Integer, Integer> getCurrentEntry() {
+        return currentEntry;
     }
 
-    public void set_modified(boolean _modified) {
-        this._modified = _modified;
-    }
-
-    public int get_id() {
-        return _id;
-    }
-
-    public void set_id(int _id) {
-        this._id = _id;
+    public void setCurrentEntry(Map<Integer, Integer> currentEntry) {
+        this.currentEntry = currentEntry;
     }
 }

@@ -18,11 +18,11 @@ public class EditorState extends AppState {
         this.location = location;
     }
 
-    public void setCurrentDB(String token) {
-        this.currentDB = token;
-    }
-
     public String getCurrentDB() {
         return currentDB;
+    }
+
+    public void setCurrentDB(String token) {
+        this.currentDB = token;
     }
 }

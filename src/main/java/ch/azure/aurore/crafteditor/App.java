@@ -1,5 +1,6 @@
 package ch.azure.aurore.crafteditor;
 
+import ch.azure.aurore.crafteditor.main.Database;
 import ch.azure.aurore.javaxt.fxml.AppSetting;
 import ch.azure.aurore.javaxt.fxml.AppState;
 import ch.azure.aurore.javaxt.fxml.FXApplication;
@@ -20,6 +21,7 @@ public class App extends FXApplication {
 
     @Override
     protected void quit() {
+        Database.getInstance().close();
     }
 
     @Override

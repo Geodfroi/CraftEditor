@@ -1,14 +1,19 @@
 package ch.azure.aurore.crafteditor.main;
 
+import ch.azure.aurore.crafteditor.App;
+import ch.azure.aurore.crafteditor.EditorSettings;
 import ch.azure.aurore.crafteditor.EditorState;
 import ch.azure.aurore.javaxt.strings.Strings;
 import javafx.application.Platform;
-import javafx.scene.control.CheckMenuItem;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class MenuHandler {
     private final MainController main;
@@ -18,6 +23,7 @@ public class MenuHandler {
         this.main = main;
         main.menuItem_close.setOnAction(e -> Platform.exit());
         main.menuItem_databaseFolder.setOnAction(e -> selectDatabaseLocation());
+        main.menuItem_createFolder.setOnAction(e -> createNewFolder());
 
         map.put(Token.CRAFT, main.checkMenuItem_craft);
         map.put(Token.DUMMY, main.checkMenuItem_dummy);
@@ -27,12 +33,48 @@ public class MenuHandler {
             c.setOnAction(actionEvent -> {
                 for (Map.Entry<Token, CheckMenuItem> i : map.entrySet()) {
                     i.getValue().setSelected(i.getValue() == c);
-                    if (i.getValue() == c)
-                        main.loadDB(i.getKey());
+                    if (i.getValue() == c){
+                        Database.getInstance().load(i.getKey());
+                        EditorState.getInstance().setCurrentDB(i.getKey().toString());
+                    }
                 }
+                refreshMenus();
             });
         }
+
         refreshMenus();
+    }
+
+    private void createNewFolder() {
+//        HierarchyNode selectedNode = main.getListViewHandler().getSelectedNode();
+//        if (selectedNode == null || !selectedNode.isFolder()){
+//            displayWarning("Can't create new folder as no parent folder is selected");
+//            return;
+//        }
+
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(main.root.getScene().getWindow());
+        dialog.setTitle("Create new folder");
+
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("/ch/azure/aurore/crafteditor/fxml/NewFolder.fxml"));
+        NewFolderController dialogController = new NewFolderController();
+        loader.setController(dialogController);
+
+        try {
+            dialog.getDialogPane().setContent(loader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to create create dialog");
+        }
+
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            String name = dialogController.getFolderName();
+            main.getListViewHandler().createNewFolder(name);
+        }
     }
 
     public void refreshMenus() {
@@ -42,10 +84,28 @@ public class MenuHandler {
 
         Token token = Token.fromString(EditorState.getInstance().getCurrentDB());
 
-        for (var i: map.entrySet()) {
-            if (i.getKey().equals(token))
-                i.getValue().setSelected(true);
+        map.forEach((key, value) -> {
+            if (key.equals(token))
+                value.setSelected(true);
+        });
+
+        main.menu_createItem.getItems().clear();
+        for (String classStr : EditorSettings.getInstance().getDefinedClassStr(token)) {
+            MenuItem menu = new MenuItem("Create new [" + classStr + "]");
+            main.menu_createItem.getItems().add(menu);
+            menu.setOnAction(e -> {
+                main.getListViewHandler().createNewEntry(classStr);
+                System.out.printf("creating %s%n", classStr);
+            });
         }
+
+        main.menu_edit.setDisable(token == Token.NONE);
+    }
+
+    private void displayWarning(String label) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(label);
+        alert.showAndWait();
     }
 
     private void selectDatabaseLocation() {

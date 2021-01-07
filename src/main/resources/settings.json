@@ -1,4 +1,7 @@
 {
   "appName" : "Craft Editor",
+  "definedClasses" : {
+    "DUMMY" : [ "Character", "Enemy" ]
+  },
   "windowSize" : [800,600]
 }
