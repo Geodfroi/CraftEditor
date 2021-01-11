@@ -1,6 +1,8 @@
 package ch.azure.aurore.crafteditor;
 
+import ch.azure.aurore.crafteditor.main.Token;
 import ch.azure.aurore.javaxt.fxml.AppState;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class EditorState extends AppState {
     private String location;
@@ -18,10 +20,15 @@ public class EditorState extends AppState {
         this.location = location;
     }
 
+    @SuppressWarnings("unused")
     public String getCurrentDB() {
         return currentDB;
     }
 
+    @JsonIgnore
+    public Token getToken()  {
+        return Token.fromString(currentDB);
+    }
     public void setCurrentDB(String token) {
         this.currentDB = token;
     }

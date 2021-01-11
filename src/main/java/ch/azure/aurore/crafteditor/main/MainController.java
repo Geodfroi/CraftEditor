@@ -42,21 +42,12 @@ public class MainController extends Controller {
     private MenuHandler menuHandler;
     private ListViewHandler listViewHandler;
 
-    @Override
-    protected void resume() {
+    public MenuHandler getMenuHandler() {
+        return menuHandler;
     }
 
-    @Override
-    protected void start() {
-        Token token = Token.fromString(EditorState.getInstance().getCurrentDB());
-        if (token != Token.NONE){
-            Database.getInstance().load(token);
-            listViewHandler.loadNodes();
-        }
-    }
-
-    @Override
-    public void quit() {
+    public ListViewHandler getListViewHandler() {
+        return listViewHandler;
     }
 
     @Override
@@ -65,7 +56,20 @@ public class MainController extends Controller {
         listViewHandler = new ListViewHandler(this);
     }
 
-    public ListViewHandler getListViewHandler() {
-        return listViewHandler;
+    @Override
+    protected void resume() {
+    }
+
+    @Override
+    protected void start() {
+        Token token = EditorState.getInstance().getToken();
+        if (token != Token.NONE) {
+            Database.getInstance().load(token);
+            listViewHandler.loadNodes();
+        }
+    }
+
+    @Override
+    public void quit() {
     }
 }

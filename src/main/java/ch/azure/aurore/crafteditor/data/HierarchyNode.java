@@ -24,7 +24,6 @@ public class HierarchyNode extends SQLiteData {
         setAsModified();
     }
 
-
     public Map<Integer, HierarchyNode> getParents() {
         return parents;
     }
@@ -132,4 +131,5 @@ public class HierarchyNode extends SQLiteData {
     public boolean isFolder() {
         return content == null;
     }
+
 }

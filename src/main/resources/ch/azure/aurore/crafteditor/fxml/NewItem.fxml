@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
-<VBox fx:id="root" xmlns="http://javafx.com/javafx"
+<VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ch.azure.aurore.crafteditor.main.NewItemController"
       prefHeight="40.0" prefWidth="230.0"
-      fx:controller="ch.azure.aurore.crafteditor.main.NewFolderController"
       spacing="4">
-
+    <ComboBox fx:id="comboBox_class"/>
     <TextField fx:id="labelTextField"
-               promptText="[Folder Name]"/>
+               promptText="[Item Name]"/>
+
 </VBox>

@@ -6,6 +6,7 @@ import ch.azure.aurore.crafteditor.EditorState;
 import ch.azure.aurore.javaxt.strings.Strings;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
 
@@ -45,36 +46,60 @@ public class MenuHandler {
         refreshMenus();
     }
 
-    private void createNewFolder() {
-//        HierarchyNode selectedNode = main.getListViewHandler().getSelectedNode();
-//        if (selectedNode == null || !selectedNode.isFolder()){
-//            displayWarning("Can't create new folder as no parent folder is selected");
-//            return;
-//        }
-
+    public void createNewFolder() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(main.root.getScene().getWindow());
         dialog.setTitle("Create new folder");
 
         FXMLLoader loader = new FXMLLoader(App.class.getResource("/ch/azure/aurore/crafteditor/fxml/NewFolder.fxml"));
-        NewFolderController dialogController = new NewFolderController();
-        loader.setController(dialogController);
-
         try {
-            dialog.getDialogPane().setContent(loader.load());
+            Node node = loader.load();
+            NewFolderController dialogController = loader.getController();
+            dialog.getDialogPane().setContent(node);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+
+            Optional<ButtonType> result = dialog.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                String name = dialogController.getFolderName();
+                main.getListViewHandler().createNewFolder(name);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to create create dialog");
         }
+    }
 
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-        dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+    public void createNewItem(String[] classes, String str) {
+        if (classes.length == 0)
+            return;
 
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            String name = dialogController.getFolderName();
-            main.getListViewHandler().createNewFolder(name);
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.initOwner(main.root.getScene().getWindow());
+        dialog.setTitle("Create new item");
+        FXMLLoader loader = new FXMLLoader(App.class.getResource("/ch/azure/aurore/crafteditor/fxml/NewItem.fxml"));
+        try {
+            Node node = loader.load();
+            NewItemController controller = loader.getController();
+            controller.setItemClass(classes, str);
+            dialog.getDialogPane().setContent(node);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+
+            Optional<ButtonType> result = dialog.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                var resultClazz = controller.getItemClass();
+                String name = controller.getItemName();
+                main.getListViewHandler().createNewEntry(resultClazz, name);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to create item dialog");
         }
+
+//        main.getListViewHandler().createNewEntry(classStr);
+//        System.out.printf("creating %s%n", classStr);
     }
 
     public void refreshMenus() {
@@ -82,7 +107,7 @@ public class MenuHandler {
         main.menu_databaseSelection.setVisible(!noLocation);
         main.menuItem_databaseFolder.setVisible(noLocation);
 
-        Token token = Token.fromString(EditorState.getInstance().getCurrentDB());
+        Token token = EditorState.getInstance().getToken();
 
         map.forEach((key, value) -> {
             if (key.equals(token))
@@ -90,13 +115,11 @@ public class MenuHandler {
         });
 
         main.menu_createItem.getItems().clear();
-        for (String classStr : EditorSettings.getInstance().getDefinedClassStr(token)) {
+        String[] classes = EditorSettings.getInstance().getDefinedClassStr(token);
+        for (String classStr : classes) {
             MenuItem menu = new MenuItem("Create new [" + classStr + "]");
             main.menu_createItem.getItems().add(menu);
-            menu.setOnAction(e -> {
-                main.getListViewHandler().createNewEntry(classStr);
-                System.out.printf("creating %s%n", classStr);
-            });
+            menu.setOnAction(e -> createNewItem(classes, classStr));
         }
 
         main.menu_edit.setDisable(token == Token.NONE);
@@ -120,4 +143,5 @@ public class MenuHandler {
             refreshMenus();
         }
     }
+
 }
